@@ -333,5 +333,22 @@ public class StudentAttendanceService {
 		// 完了メッセージ
 		return messageUtil.getMessage(Constants.PROP_KEY_ATTENDANCE_UPDATE_NOTICE);
 	}
-
+	
+	/**
+	 * 過去日の未入力チェック
+	 * 
+	 * @return 未入力チェックの判定
+	 * @throws ParseException
+	 */
+	public boolean notEnterCheck() throws ParseException {
+		boolean checkFlag = true;
+		Date trainingDate = attendanceUtil.getTrainingDate();
+		Integer count = tStudentAttendanceMapper.notEnterCount(loginUserDto.getLmsUserId(),trainingDate,Constants.DB_FLG_FALSE);
+		if(count > 0) {
+			checkFlag = true;
+		}else {
+			checkFlag = false;
+		}
+		return checkFlag;
+	}
 }

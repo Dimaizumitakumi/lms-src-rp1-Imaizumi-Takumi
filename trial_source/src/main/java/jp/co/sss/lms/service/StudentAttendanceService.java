@@ -334,6 +334,7 @@ public class StudentAttendanceService {
 		return messageUtil.getMessage(Constants.PROP_KEY_ATTENDANCE_UPDATE_NOTICE);
 	}
 	
+	// 今泉拓巳 – Task.25　ここから
 	/**
 	 * 過去日の未入力チェック
 	 * 
@@ -351,4 +352,5 @@ public class StudentAttendanceService {
 		}
 		return checkFlag;
 	}
+	// 今泉拓巳 – Task.25　ここまで
 }

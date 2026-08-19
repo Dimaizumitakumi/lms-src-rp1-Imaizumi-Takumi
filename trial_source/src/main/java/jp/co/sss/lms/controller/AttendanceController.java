@@ -138,6 +138,10 @@ public class AttendanceController {
 	public String complete(AttendanceForm attendanceForm, Model model, BindingResult result)
 			throws ParseException {
 
+		// 今泉拓巳 – Task.26　ここから
+		studentAttendanceService.formatConversion(attendanceForm);
+		// 今泉拓巳 – Task.26　ここまで
+		
 		// 更新
 		String message = studentAttendanceService.update(attendanceForm);
 		model.addAttribute("message", message);

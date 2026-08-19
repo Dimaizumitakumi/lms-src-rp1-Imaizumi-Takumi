@@ -219,6 +219,10 @@ public class StudentAttendanceService {
 		attendanceForm.setUserName(loginUserDto.getUserName());
 		attendanceForm.setLeaveFlg(loginUserDto.getLeaveFlg());
 		attendanceForm.setBlankTimes(attendanceUtil.setBlankTime());
+		// 今泉拓巳 – Task.26　ここから
+		attendanceForm.setHourMap(attendanceUtil.getHourMap());
+		attendanceForm.setMinuteMap(attendanceUtil.getMinuteMap());
+		// 今泉拓巳 – Task.26　ここまで
 
 		// 途中退校している場合のみ設定
 		if (loginUserDto.getLeaveDate() != null) {
@@ -238,6 +242,12 @@ public class StudentAttendanceService {
 			dailyAttendanceForm
 					.setTrainingStartTime(attendanceManagementDto.getTrainingStartTime());
 			dailyAttendanceForm.setTrainingEndTime(attendanceManagementDto.getTrainingEndTime());
+			// 今泉拓巳 – Task.26　ここから
+			dailyAttendanceForm.setStartHour(attendanceUtil.getHour(attendanceManagementDto.getTrainingStartTime()));
+			dailyAttendanceForm.setStartMinute(attendanceUtil.getMinute(attendanceManagementDto.getTrainingStartTime()));
+			dailyAttendanceForm.setEndHour(attendanceUtil.getHour(attendanceManagementDto.getTrainingEndTime()));
+			dailyAttendanceForm.setEndMinute(attendanceUtil.getMinute(attendanceManagementDto.getTrainingEndTime()));
+			// 今泉拓巳 – Task.26　ここまで
 			if (attendanceManagementDto.getBlankTime() != null) {
 				dailyAttendanceForm.setBlankTime(attendanceManagementDto.getBlankTime());
 				dailyAttendanceForm.setBlankTimeValue(String.valueOf(
@@ -351,5 +361,24 @@ public class StudentAttendanceService {
 			checkFlag = false;
 		}
 		return checkFlag;
+	}
+	
+	/**
+	 * 時間の形式変換
+	 * 
+	 * @author 今泉拓巳  – Task.26
+	 * @param attendanceForm
+	 */
+	public void formatConversion(AttendanceForm attendanceForm) {
+		for(DailyAttendanceForm dailyAttendanceForm : attendanceForm.getAttendanceList()) {
+			if(dailyAttendanceForm.getStartHour() != null && dailyAttendanceForm.getStartMinute() != null) {
+				String newTrainingStartTime = String.format("%02d:%02d",dailyAttendanceForm.getStartHour(),dailyAttendanceForm.getStartMinute());
+				dailyAttendanceForm.setTrainingStartTime(newTrainingStartTime);
+			}
+			if(dailyAttendanceForm.getEndHour() != null && dailyAttendanceForm.getEndMinute() != null) {
+				String newTrainingEndTime = String.format("%02d:%02d",dailyAttendanceForm.getEndHour(),dailyAttendanceForm.getEndMinute());
+				dailyAttendanceForm.setTrainingEndTime(newTrainingEndTime);
+			}
+		}
 	}
 }

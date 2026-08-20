@@ -49,13 +49,13 @@ public class DailyAttendanceForm {
 	
 	// 今泉拓巳 – Task.26　ここから
 	/** 出勤時間(時) */
-	private Integer startHour;
+	private Integer trainingStartTimeHour;
 	/** 出勤時間(分) */
-	private Integer startMinute;
+	private Integer trainingStartTimeMinute;
 	/** 退勤時間(時) */
-	private Integer endHour;
+	private Integer trainingEndTimeHour;
 	/** 退勤時間(分) */
-	private Integer endMinute;
+	private Integer trainingEndTimeMinute;
 	// 今泉拓巳 – Task.26　ここまで
 
 }

@@ -23,7 +23,8 @@
 
 			<form th:action="@{/attendance/update}" method="post">
 				<table class="table table-hover dataTable no-footer">
-					<thead>
+					<!-- 今泉拓巳 task29 theadタグにstyle="display: block;"追加 -->
+					<thead style="display: block;">
 						<tr>
 							<th class="w140">日付</th>
 							<!-- 今泉拓巳 task26 w140へ変更 -->
@@ -31,15 +32,16 @@
 							<!-- 今泉拓巳 task28 定時ボタン用列追加 -->
 							<th class="w60"></th>
 							<!-- 今泉拓巳 task26 colspan追加 -->
-							<th class="w70" colspan="3">出勤</th>
+							<th class="w180" colspan="3">出勤</th>
 							<!-- 今泉拓巳 task26 colspan追加 -->
-							<th class="w70" colspan="3">退勤</th>
+							<th class="w180" colspan="3">退勤</th>
 							<th class="w80">中抜け時間</th>
-							<th class="w80">ステータス</th>
+							<th class="w70">ステータス</th>
 							<th class="w140">備考</th>
 						</tr>
 					</thead>
-					<tbody>
+					<!-- 今泉拓巳 task29 tbodyタグにstyle="display: block; overflow-y: scroll; height: 560px;"追加 -->
+					<tbody style="display: block; overflow-y: scroll; height: 560px;">
 						<th:block th:each="dailyAttendanceForm, stat : *{attendanceForm.attendanceList}">
 							<tr>
 								<th:block>

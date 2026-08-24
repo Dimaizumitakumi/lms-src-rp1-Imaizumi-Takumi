@@ -8,6 +8,8 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
@@ -380,5 +382,41 @@ public class StudentAttendanceService {
 				dailyAttendanceForm.setTrainingEndTime(newTrainingEndTime);
 			}
 		}
+	}
+	
+	/**
+	 * 勤怠更新時の入力チェック
+	 * 
+	 * @author 今泉拓巳  – Task.27
+	 * @param AttendanceForm attendanceForm, BindingResult result
+	 */
+	public void updateInputCheck(AttendanceForm attendanceForm, BindingResult result) {
+		for(int i = 0; i < attendanceForm.getAttendanceList().size(); i++) {
+			DailyAttendanceForm dailyAttendanceForm = attendanceForm.getAttendanceList().get(i);
+			if(dailyAttendanceForm.getNote().length() > 100) {
+				String fieldName = "attendanceList[" + i + "].note";
+				result.addError(new FieldError(result.getObjectName(), fieldName, messageUtil.getMessage("maxlength")));
+			}
+			if(dailyAttendanceForm.getTrainingStartTimeHour() == null && dailyAttendanceForm.getTrainingStartTimeMinute() != null) {
+				String fieldName = "attendanceList[" + i + "].trainingStartTimeHour";
+				result.addError(new FieldError(result.getObjectName(), fieldName, messageUtil.getMessage("input.invalid")));
+			}
+			if(dailyAttendanceForm.getTrainingStartTimeHour() != null && dailyAttendanceForm.getTrainingStartTimeMinute() == null) {
+				String fieldName = "attendanceList[" + i + "].trainingStartTimeMinute";
+				result.addError(new FieldError(result.getObjectName(), fieldName, messageUtil.getMessage("input.invalid")));
+			}
+			if(dailyAttendanceForm.getTrainingEndTimeHour() == null && dailyAttendanceForm.getTrainingEndTimeMinute() != null) {
+				String fieldName = "attendanceList[" + i + "].trainingEndTimeHour";
+				result.addError(new FieldError(result.getObjectName(), fieldName, messageUtil.getMessage("input.invalid")));
+			}
+			if(dailyAttendanceForm.getTrainingEndTimeHour() != null && dailyAttendanceForm.getTrainingEndTimeMinute() == null) {
+				String fieldName = "attendanceList[" + i + "].trainingEndTimeMinute";
+				result.addError(new FieldError(result.getObjectName(), fieldName, messageUtil.getMessage("input.invalid")));
+			}
+			
+		}
+		attendanceForm.setBlankTimes(attendanceUtil.setBlankTime());
+		attendanceForm.setHourMap(attendanceUtil.getHourMap());
+		attendanceForm.setMinuteMap(attendanceUtil.getMinuteMap());
 	}
 }

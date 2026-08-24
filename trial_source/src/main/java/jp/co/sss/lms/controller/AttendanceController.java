@@ -142,6 +142,14 @@ public class AttendanceController {
 		studentAttendanceService.formatConversion(attendanceForm);
 		// 今泉拓巳 – Task.26　ここまで
 		
+		// 今泉拓巳 – Task.27　ここから
+		studentAttendanceService.updateInputCheck(attendanceForm, result);
+		if(result.hasErrors()) {
+			model.addAttribute("attendanceForm", attendanceForm);
+			return "attendance/update";
+		}
+		// 今泉拓巳 – Task.27　ここまで
+		
 		// 更新
 		String message = studentAttendanceService.update(attendanceForm);
 		model.addAttribute("message", message);

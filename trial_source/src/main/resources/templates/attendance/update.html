@@ -20,8 +20,13 @@
 
 	<div class="row">
 		<div class="bs-component col-sm-12">
-
-			<form th:action="@{/attendance/update}" method="post">
+			<!-- 今泉拓巳 task27 th:object追加 -->
+			<form th:action="@{/attendance/update}" method="post" th:object="${attendanceForm}">
+				<ul>
+					<li th:each="errormsg:${#fields.errors('*')}">
+						<span th:text="${errormsg}" class="help-inline error"></span>
+					</li>
+				</ul>
 				<table class="table table-hover dataTable no-footer">
 					<!-- 今泉拓巳 task29 theadタグにstyle="display: block;"追加 -->
 					<thead style="display: block;">
@@ -42,7 +47,7 @@
 					</thead>
 					<!-- 今泉拓巳 task29 tbodyタグにstyle="display: block; overflow-y: scroll; height: 560px;"追加 -->
 					<tbody style="display: block; overflow-y: scroll; height: 560px;">
-						<th:block th:each="dailyAttendanceForm, stat : *{attendanceForm.attendanceList}">
+						<th:block th:each="dailyAttendanceForm, stat : *{attendanceList}">
 							<tr>
 								<th:block>
 									<input type="hidden" th:name="|attendanceList[${stat.index}].isToday|" th:value="${dailyAttendanceForm.isToday}" />
@@ -60,27 +65,27 @@
 								<!-- 今泉拓巳 task26 プルダウン方式へ変更ここから -->
 								<!-- 今泉拓巳 task28 scriptのためselectタグにid追加ここから -->
 								<td class="w70">
-									<select th:id="|startHour_${stat.index}|" th:name="|attendanceList[${stat.index}].trainingStartTimeHour|" class="form-control">
+									<select th:id="|startHour_${stat.index}|" th:field="*{attendanceList[__${stat.index}__].trainingStartTimeHour}" class="form-control" th:errorclass="errorInput">
 										<option th:each="hour : ${attendanceForm.hourMap}" th:value="${hour.key}" th:inlne="text" class="form-control" 
 											th:selected="${hour.key == dailyAttendanceForm.trainingStartTimeHour}">[[${hour.value}]]</option>
 									</select>
 								</td>
 								<td>:</td>
 								<td class="w70">
-									<select th:id="|startMinute_${stat.index}|" th:name="|attendanceList[${stat.index}].trainingStartTimeMinute|" class="form-control">
+									<select th:id="|startMinute_${stat.index}|" th:field="*{attendanceList[__${stat.index}__].trainingStartTimeMinute}" class="form-control" th:errorclass="errorInput">
 										<option th:each="minute : ${attendanceForm.minuteMap}" th:value="${minute.key}" th:inlne="text" class="form-control" 
 											th:selected="${minute.key == dailyAttendanceForm.trainingStartTimeMinute}">[[${minute.value}]]</option>
 									</select>
 								</td>
 								<td class="w70">
-									<select th:id="|endHour_${stat.index}|" th:name="|attendanceList[${stat.index}].trainingEndTimeHour|" class="form-control">
+									<select th:id="|endHour_${stat.index}|" th:field="*{attendanceList[__${stat.index}__].trainingEndTimeHour}" class="form-control" th:errorclass="errorInput">
 										<option th:each="hour : ${attendanceForm.hourMap}" th:value="${hour.key}" th:inlne="text" class="form-control" 
 											th:selected="${hour.key == dailyAttendanceForm.trainingEndTimeHour}">[[${hour.value}]]</option>
 									</select>
 								</td>
 								<td>:</td>
 								<td class="w70">
-									<select th:id="|endMinute_${stat.index}|" th:name="|attendanceList[${stat.index}].trainingEndTimeMinute|" class="form-control">
+									<select th:id="|endMinute_${stat.index}|" th:field="*{attendanceList[__${stat.index}__].trainingEndTimeMinute}" class="form-control" th:errorclass="errorInput">
 										<option th:each="minute : ${attendanceForm.minuteMap}" th:value="${minute.key}" th:inlne="text" class="form-control" 
 											th:selected="${minute.key == dailyAttendanceForm.trainingEndTimeMinute}">[[${minute.value}]]</option>
 									</select>
@@ -94,8 +99,9 @@
 									</select>
 								</td>
 								<td class="w70">[[${dailyAttendanceForm.statusDispName}]]</td>
-								<td class="w240">
-									<input type="text" th:name="|attendanceList[${stat.index}].note|" th:value="${dailyAttendanceForm.note}" class="form-control"></input>
+								<td class="w140" >
+									<input type="text" th:field="*{attendanceList[__${stat.index}__].note}"
+									 class="form-control" th:errorclass="errorInput"></input>
 								</td>
 							</tr>
 						</th:block>
@@ -109,13 +115,22 @@
 					<th:block th:if="${session.loginUserDto.role != '0001'}">
 						<input type="submit" value="戻る" name="indexCompany" class="btn btn-default" />
 					</th:block>
-					<input type="submit" value="更新" name="complete" class="btn btn-info" />
+					<input type="submit" value="更新" name="complete" class="btn btn-info" onclick="return registCheck();" />
 				</div>
 
 			</form>
 		</div>
 	</div>
-	
+	<script>
+      function registCheck() {
+        if (confirm("更新します。よろしいですか？")) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+    </script>
 	<!-- 今泉拓巳 task28 scriptタグ追加 -->
 	<script>
 		function setTime(index) {

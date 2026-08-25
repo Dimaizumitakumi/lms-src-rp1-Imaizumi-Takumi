@@ -20,13 +20,11 @@
 
 	<div class="row">
 		<div class="bs-component col-sm-12">
-			<!-- 今泉拓巳 task27 th:object追加 -->
+			<!-- 今泉拓巳 task27 エラー出力されるように変更 -->
 			<form th:action="@{/attendance/update}" method="post" th:object="${attendanceForm}">
-				<ul>
-					<li th:each="errormsg:${#fields.errors()}">
-						<span th:text="${errormsg}" class="help-inline error"></span>
-					</li>
-				</ul>
+					<div th:each="errormsg:${#fields.errors().stream().distinct().toList()}">
+						<span class="help-inline error">* <span th:text="${errormsg}"></span></span>
+					</div>
 				<table class="table table-hover dataTable no-footer">
 					<!-- 今泉拓巳 task29 theadタグにstyle="display: block;"追加 -->
 					<thead style="display: block;">
@@ -93,7 +91,7 @@
 								<!-- 今泉拓巳 task28 scriptのためselectタグにid追加ここから -->
 								<!-- 今泉拓巳 task26 プルダウン方式へ変更ここまで -->
 								<td class="w80">
-									<select th:name="|attendanceList[${stat.index}].blankTime|" class="form-control">
+									<select th:field="*{attendanceList[__${stat.index}__].blankTime}" class="form-control" th:errorclass="errorInput">
 										<option th:each="blankTime : ${attendanceForm.blankTimes}" th:value="${blankTime.key}" th:inlne="text" class="form-control" 
 											th:selected="${blankTime.key == dailyAttendanceForm.blankTime}">[[${blankTime.value}]]</option>
 									</select>

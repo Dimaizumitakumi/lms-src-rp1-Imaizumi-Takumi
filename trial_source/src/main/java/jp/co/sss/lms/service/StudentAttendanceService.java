@@ -393,38 +393,68 @@ public class StudentAttendanceService {
 	public void updateInputCheck(AttendanceForm attendanceForm, BindingResult result) {
 		for(int i = 0; i < attendanceForm.getAttendanceList().size(); i++) {
 			DailyAttendanceForm dailyAttendanceForm = attendanceForm.getAttendanceList().get(i);
+			Integer startTimeHour = dailyAttendanceForm.getTrainingStartTimeHour();
+			Integer startTimeMinute = dailyAttendanceForm.getTrainingStartTimeMinute();
+			Integer endTimeHour = dailyAttendanceForm.getTrainingEndTimeHour();
+			Integer endTimeMinute = dailyAttendanceForm.getTrainingEndTimeMinute();
 			
 			if(dailyAttendanceForm.getNote().length() > 100) {
 				String fieldName = "attendanceList[" + i + "].note";
 				result.addError(new FieldError(result.getObjectName(), fieldName, messageUtil.getMessage("maxlength", new String[] {"備考", "100"})));
 			}
 			
-			if(dailyAttendanceForm.getTrainingStartTimeHour() == null && dailyAttendanceForm.getTrainingStartTimeMinute() != null) {
+			if(startTimeHour == null && startTimeMinute != null) {
 				String fieldName = "attendanceList[" + i + "].trainingStartTimeHour";
 				result.addError(new FieldError(result.getObjectName(), fieldName, messageUtil.getMessage("input.invalid", new String[] {"出勤時間"})));
-			}else if(dailyAttendanceForm.getTrainingStartTimeHour() != null && dailyAttendanceForm.getTrainingStartTimeMinute() == null) {
+			}else if(startTimeHour != null && startTimeMinute == null) {
 				String fieldName = "attendanceList[" + i + "].trainingStartTimeMinute";
 				result.addError(new FieldError(result.getObjectName(), fieldName, messageUtil.getMessage("input.invalid", new String[] {"出勤時間"})));
 			}
 			
-			if(dailyAttendanceForm.getTrainingEndTimeHour() == null && dailyAttendanceForm.getTrainingEndTimeMinute() != null) {
+			if(endTimeHour == null && endTimeMinute != null) {
 				String fieldName = "attendanceList[" + i + "].trainingEndTimeHour";
 				result.addError(new FieldError(result.getObjectName(), fieldName, messageUtil.getMessage("input.invalid", new String[] {"退勤時間"})));
-			}else if(dailyAttendanceForm.getTrainingEndTimeHour() != null && dailyAttendanceForm.getTrainingEndTimeMinute() == null) {
+			}else if(endTimeHour != null && endTimeMinute == null) {
 				String fieldName = "attendanceList[" + i + "].trainingEndTimeMinute";
 				result.addError(new FieldError(result.getObjectName(), fieldName, messageUtil.getMessage("input.invalid", new String[] {"退勤時間"})));
 			}
 			
-			if(dailyAttendanceForm.getTrainingStartTimeHour() == null && dailyAttendanceForm.getTrainingStartTimeMinute() == null && dailyAttendanceForm.getTrainingEndTime() !=null) {
+			if(startTimeHour == null && startTimeMinute == null && dailyAttendanceForm.getTrainingEndTime() != null) {
 				String fieldName1 = "attendanceList[" + i + "].trainingStartTimeHour";
 				String fieldName2 = "attendanceList[" + i + "].trainingStartTimeMinute";
 				result.addError(new FieldError(result.getObjectName(), fieldName1, messageUtil.getMessage("attendance.punchInEmpty")));
-				result.addError(new FieldError(result.getObjectName(), fieldName2, ""));
+				result.addError(new FieldError(result.getObjectName(), fieldName2, messageUtil.getMessage("attendance.punchInEmpty")));
+			}
+			
+			if(dailyAttendanceForm.getTrainingStartTime() != null && dailyAttendanceForm.getTrainingEndTime() != null) {
+				if((startTimeHour > endTimeHour)
+						|| ((startTimeHour == endTimeHour) && startTimeMinute>endTimeMinute)) {
+					String fieldName1 = "attendanceList[" + i + "].trainingStartTimeHour";
+					String fieldName2 = "attendanceList[" + i + "].trainingStartTimeMinute";
+					String fieldName3 = "attendanceList[" + i + "].trainingEndTimeHour";
+					String fieldName4 = "attendanceList[" + i + "].trainingEndTimeMinute";
+					String index = Integer.toString(i);
+					result.addError(new FieldError(result.getObjectName(), fieldName1, messageUtil.getMessage("attendance.trainingTimeRange", new String[] {index})));
+					result.addError(new FieldError(result.getObjectName(), fieldName2, messageUtil.getMessage("attendance.trainingTimeRange", new String[] {index})));
+					result.addError(new FieldError(result.getObjectName(), fieldName3, messageUtil.getMessage("attendance.trainingTimeRange", new String[] {index})));
+					result.addError(new FieldError(result.getObjectName(), fieldName4, messageUtil.getMessage("attendance.trainingTimeRange", new String[] {index})));
+				}
+			}
+			
+			if(dailyAttendanceForm.getBlankTime() != null && dailyAttendanceForm.getTrainingStartTime() != null && dailyAttendanceForm.getTrainingEndTime() != null) {
+				Integer trainingTime = (endTimeHour*60+endTimeMinute) - (startTimeHour*60+startTimeMinute);
+				if(dailyAttendanceForm.getBlankTime() > trainingTime) {
+					String fieldName = "attendanceList[" + i + "].blankTime";
+					result.addError(new FieldError(result.getObjectName(), fieldName, messageUtil.getMessage("attendance.blankTimeError")));
+				}
 			}
 			
 		}
-		attendanceForm.setBlankTimes(attendanceUtil.setBlankTime());
-		attendanceForm.setHourMap(attendanceUtil.getHourMap());
-		attendanceForm.setMinuteMap(attendanceUtil.getMinuteMap());
+		if(result.hasErrors()) {
+			attendanceForm.setBlankTimes(attendanceUtil.setBlankTime());
+			attendanceForm.setHourMap(attendanceUtil.getHourMap());
+			attendanceForm.setMinuteMap(attendanceUtil.getMinuteMap());
+		}
+		
 	}
 }

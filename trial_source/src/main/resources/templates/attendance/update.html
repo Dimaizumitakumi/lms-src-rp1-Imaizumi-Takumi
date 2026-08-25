@@ -23,7 +23,7 @@
 			<!-- 今泉拓巳 task27 th:object追加 -->
 			<form th:action="@{/attendance/update}" method="post" th:object="${attendanceForm}">
 				<ul>
-					<li th:each="errormsg:${#fields.errors('*')}">
+					<li th:each="errormsg:${#fields.errors()}">
 						<span th:text="${errormsg}" class="help-inline error"></span>
 					</li>
 				</ul>

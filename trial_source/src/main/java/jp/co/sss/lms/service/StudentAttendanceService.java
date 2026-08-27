@@ -353,7 +353,7 @@ public class StudentAttendanceService {
 	 * @return 未入力チェックの判定
 	 * @throws ParseException
 	 */
-	public boolean notEnterCheck() throws ParseException {
+	public Boolean notEnterCheck() throws ParseException {
 		boolean checkFlag = true;
 		Date trainingDate = attendanceUtil.getTrainingDate();
 		Integer count = tStudentAttendanceMapper.notEnterCount(loginUserDto.getLmsUserId(),trainingDate,Constants.DB_FLG_FALSE);
